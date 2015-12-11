@@ -1,13 +1,13 @@
 (defun poly+ (poly1 poly2)
   (add-terms poly1 poly2))
 
-(defun find-variable-symbol (single-poly)
+(defun variable-symbol (single-poly)
   (car (car (car single-poly))))
 
-(defun find-exponent (single-poly)
+(defun exponent (single-poly)
   (cdr (car (car single-poly))))
 
-(defun find-multiplier (single-poly)
+(defun multiplier (single-poly)
   (cdr (car single-poly)))
 
 (defun is-single-poly (var-poly)
