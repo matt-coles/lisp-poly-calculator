@@ -89,9 +89,11 @@
                        (term-addition (car poly) y))
              (cdr poly)) (car poly))))))))
 
+;; Map a single polynomial onto each term of another polynomial
 (defun map-onto-poly (single-poly poly)
   (map 'list #'(lambda (x) (multiply-singles single-poly x)) poly))
 
+;; Multiply two singular polynomials together
 (defun multiply-singles (single-poly1 single-poly2)
   (cond
     ((equal (variable-symbol single-poly1) (variable-symbol single-poly2))
@@ -109,11 +111,10 @@
                         (exponent single-poly2)))
             (* (multiplier single-poly1) (multiplier single-poly2))))))
 
+;; Multiply two polynomials together, see the map-poly will be recursed
+;; and the poly will remain constant
 (defun multiply-terms (map-poly poly)
   (cond
     ((equal map-poly nil) nil)
     (T (remove nil (append (map-onto-poly (car map-poly) poly) 
                (multiply-terms (cdr map-poly) poly))))))
-
-; (poly+ '(((x 2) 3)) '(((y 2) 4)))
-; (poly+ '(((x 2) 3) ((y 2) 3)) '(((y 2) 4)))
