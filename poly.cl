@@ -6,6 +6,10 @@
 (defun poly- (poly1 poly2)
   (add-terms (append poly1 (flip-multipliers poly2))))
 
+;; Multiply polynomials together
+(defun poly* (poly1 poly2)
+  (clear-zero (add-terms (multiply-terms poly1 poly2))))
+
 ;; Returns the variable component of a singular polynomial
 (defun variable-symbol (single-poly)
   (car (car single-poly)))
@@ -42,9 +46,24 @@
 ;; Returns true if a polynomial contains only unique terms
 (defun poly-unique-terms? (poly)
   (cond ((equal poly nil) T)
-  (T (if (some #'(lambda (x) (equal (car x) (car (car poly)))) (cdr poly))
+  (T (if (some #'(lambda (x) (and (equal (flatten 
+                                                  (variable-symbol x))
+                                                (flatten 
+                                                  (variable-symbol 
+                                                    (car poly))))
+                              (equal (flatten (exponent x))
+                                     (flatten (exponent (car poly))))))
+               (cdr poly))
     nil
     (poly-unique-terms? (cdr poly))))))
+
+;; Functional flatten from Rosetta Code: 
+;; http://rosettacode.org/wiki/Flatten_a_list#Common_Lisp
+(defun flatten (x &optional stack out)
+  (cond ((consp x) (flatten (rest x) (cons (first x) stack) out))
+        (x         (flatten (first stack) (rest stack) (cons x out)))
+        (stack     (flatten (first stack) (rest stack) out))
+        (t out)))
 
 ;; This function replaces a full list of nils with the replace-term, otherwise
 ;; returns the list
@@ -56,7 +75,8 @@
 ;; Removes all zeroes from the polynomial
 (defun clear-zero (poly)
   (remove nil (map 'list #'(lambda (x)
-                 (if (equal (multiplier x) 0) nil x)) poly)))
+                 (if (or (equal (multiplier x) 0) (equal (exponent x) 0)) nil x)) 
+                   poly)))
 
 ;; Recursively adds all the terms in the list
 (defun add-terms (poly)
@@ -68,6 +88,32 @@
         (useful-replace-nil (map 'list #'(lambda (y)
                        (term-addition (car poly) y))
              (cdr poly)) (car poly))))))))
+
+(defun map-onto-poly (single-poly poly)
+  (map 'list #'(lambda (x) (multiply-singles single-poly x)) poly))
+
+(defun multiply-singles (single-poly1 single-poly2)
+  (cond
+    ((equal (variable-symbol single-poly1) (variable-symbol single-poly2))
+     (list (list (variable-symbol single-poly1) 
+                 (if (typep (exponent single-poly1) 'list)
+                   (map 'list #'+ (exponent single-poly1) 
+                        (exponent single-poly2))
+                   (+ (exponent single-poly1) (exponent single-poly2))))
+           (* (multiplier single-poly1) (multiplier single-poly2)))
+    )
+    (T
+      (list (list (list (variable-symbol single-poly1)
+                        (variable-symbol single-poly2))
+                  (list (exponent single-poly1)
+                        (exponent single-poly2)))
+            (* (multiplier single-poly1) (multiplier single-poly2))))))
+
+(defun multiply-terms (map-poly poly)
+  (cond
+    ((equal map-poly nil) nil)
+    (T (remove nil (append (map-onto-poly (car map-poly) poly) 
+               (multiply-terms (cdr map-poly) poly))))))
 
 ; (poly+ '(((x 2) 3)) '(((y 2) 4)))
 ; (poly+ '(((x 2) 3) ((y 2) 3)) '(((y 2) 4)))
