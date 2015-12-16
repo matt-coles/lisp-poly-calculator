@@ -1,10 +1,10 @@
 ;; Add two polynomials together
 (defun poly+ (poly1 poly2)
-  (add-terms (append poly1 poly2) nil nil))
+  (add-terms (append poly1 poly2)))
 
 ;; Subtract one polynomial from another
 (defun poly- (poly1 poly2)
-  (add-terms (append poly1 (flip-multipliers poly2)) nil nil))
+  (add-terms (append poly1 (flip-multipliers poly2))))
 
 ;; Returns the variable component of a singular polynomial
 (defun variable-symbol (single-poly)
@@ -39,6 +39,13 @@
     nil
     term2))
 
+;; Returns true if a polynomial contains only unique terms
+(defun poly-unique-terms? (poly)
+  (cond ((equal poly nil) T)
+  (T (if (some #'(lambda (x) (equal (car x) (car (car poly)))) (cdr poly))
+    nil
+    (poly-unique-terms? (cdr poly))))))
+
 ;; This function replaces a full list of nils with the replace-term, otherwise
 ;; returns the list
 (defun useful-replace-nil (addition-seq replace-term)
@@ -52,17 +59,15 @@
                  (if (equal (multiplier x) 0) nil x)) poly)))
 
 ;; Recursively adds all the terms in the list
-(defun add-terms (poly orig_var curr_var)
+(defun add-terms (poly)
   (cond
-    ((and (equal orig_var curr_var) (not (equal orig_var nil))) (clear-zero poly))
+    ((poly-unique-terms? poly) (clear-zero poly))
     (T (add-terms (remove nil (append (map 'list #'(lambda (x)
                                      (term-failure (car poly) x))
                            (cdr poly))
         (useful-replace-nil (map 'list #'(lambda (y)
                        (term-addition (car poly) y))
-             (cdr poly)) (car poly)))) 
-                  (if (equal orig_var nil) (car (car poly)) orig_var)
-                  (car (car (cdr poly)))))))
+             (cdr poly)) (car poly))))))))
 
 ; (poly+ '(((x 2) 3)) '(((y 2) 4)))
 ; (poly+ '(((x 2) 3) ((y 2) 3)) '(((y 2) 4)))
