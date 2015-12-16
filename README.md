@@ -4,11 +4,11 @@
 
 * Polynomials are in the form:
 
-    '(((SYMBOL EXPONENT) MULTIPLIER) ((SYMBOL EXPONENT) MULTIPLIER))
+        '(((SYMBOL EXPONENT) MULTIPLIER) ((SYMBOL EXPONENT) MULTIPLIER))
 
 * For example this:
 
-    '(((x 2) 5) ((((x y) (2 3)) 5))) = 5x^2 + 5x^2y^3
+        '(((x 2) 5) ((((x y) (2 3)) 5))) = 5x^2 + 5x^2y^3
 
 * The functions that exist are poly+ poly- poly*
 
