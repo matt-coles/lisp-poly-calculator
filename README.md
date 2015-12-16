@@ -10,7 +10,10 @@
 
         '(((x 2) 5) ((((x y) (2 3)) 5))) = 5x^2 + 5x^2y^3
 
-* The functions that exist are poly+ poly- poly*
+* The functions that exist are poly+ poly- poly*, all three take two inputs,
+  polynomials in the form described above, and output polynomials in the same
+  format. They perform the respective operations addition, subtraction and
+  multiplication.
 
 Below you can see an example of the test output:
 
