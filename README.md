@@ -1,6 +1,6 @@
 # LISP Polynomial Calculator
 
-* A simple polynomial calculator in lisp
+* A simple polynomial calculator in Common Lisp
 
 * Polynomials are in the form:
 
