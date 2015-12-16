@@ -31,4 +31,4 @@
         '(((X 3) 15) (((X Y) (2 1)) 5) (((Y X) (2 1)) 3) ((Y 3) 1)))
     (format t "(5x^2+y^2) * (3x + y) ... passed - complex multiplication~%")
     (format t "(5x^2+y^2) * (3x + y) ... failed - complex multiplication~%"))
-  )
+  T)
